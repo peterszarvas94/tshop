@@ -21,18 +21,27 @@ var rootCmd = &cobra.Command{
 
 var Client *terminal.Client
 
-func init() {
-	// initCmd.Flags().StringP("template", "t", "", "Specify a project template, e.g. \"bare\", \"basic-auth\"")
-	Client = terminal.NewClient(
-		option.WithBaseURL(constants.BaseUrl),
-	)
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(listCmd)
-}
-
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)
+	}
+}
+
+func init() {
+	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(listCmd)
+
+	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		token, ok := os.LookupEnv("TERMINAL_TOKEN")
+		if !ok || token == "" {
+			fmt.Printf("Environment variable \"TERMINAL_TOKEN\" is missing\n")
+			os.Exit(1)
+		}
+
+		Client = terminal.NewClient(
+			option.WithBaseURL(constants.BaseUrl),
+			option.WithBearerToken(token),
+		)
 	}
 }
