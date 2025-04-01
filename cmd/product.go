@@ -18,7 +18,7 @@ var productCmd = &cobra.Command{
 
 var listProductsCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all products",
+	Short: "List all products with variant and price",
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(context.Background())
@@ -42,7 +42,7 @@ var listProductsCmd = &cobra.Command{
 
 var getProductCmd = &cobra.Command{
 	Use:   "info [name]",
-	Short: "Get info about a product",
+	Short: "Get description of a product",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(context.Background())

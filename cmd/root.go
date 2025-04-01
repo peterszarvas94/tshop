@@ -38,6 +38,8 @@ func init() {
 	rootCmd.AddCommand(productCmd)
 
 	// profil
+	profilCmd.AddCommand(profilInfoCmd)
+	rootCmd.AddCommand(profilCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		token, ok := os.LookupEnv("TERMINAL_TOKEN")

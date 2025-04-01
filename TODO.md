@@ -8,12 +8,17 @@
 ## Shop
 
 - [x] list all products
-- [ ] get info from item?
+- [x] get product info (desctiption)
 - [ ] add items to card
 - [ ] add to card
 - [ ] remove from cart
 - [ ] check cart
 - [ ] clear card
+
+## Profil
+
+- [x] get profil info
+- [ ] update profil info
 
 ## Address
 
