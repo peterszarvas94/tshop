@@ -11,15 +11,17 @@ import (
 )
 
 var productCmd = &cobra.Command{
-	Use:   "product",
-	Short: "Manage products",
-	Args:  cobra.ExactArgs(0),
+	Use:     "product",
+	Short:   "Manage products",
+	Aliases: []string{"p"},
+	Args:    cobra.ExactArgs(0),
 }
 
 var listProductsCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all products with variant and price",
-	Args:  cobra.ExactArgs(0),
+	Use:     "list",
+	Short:   "List all products with variant and price",
+	Aliases: []string{"l"},
+	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(context.Background())
 		if err != nil {
@@ -41,9 +43,10 @@ var listProductsCmd = &cobra.Command{
 }
 
 var getProductCmd = &cobra.Command{
-	Use:   "info [name]",
-	Short: "Get description of a product",
-	Args:  cobra.ExactArgs(1),
+	Use:     "info [name]",
+	Short:   "Get description of a product",
+	Aliases: []string{"i"},
+	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(context.Background())
 		if err != nil {
