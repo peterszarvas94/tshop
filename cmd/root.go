@@ -28,6 +28,8 @@ func Execute() {
 	}
 }
 
+var name, email string
+
 func init() {
 	// version
 	rootCmd.AddCommand(versionCmd)
@@ -39,6 +41,11 @@ func init() {
 
 	// profil
 	profilCmd.AddCommand(profilInfoCmd)
+	profilCmd.AddCommand(profilUpdateCmd)
+
+	profilUpdateCmd.Flags().StringVarP(&name, "name", "n", "", "User's name")
+	profilUpdateCmd.Flags().StringVarP(&email, "email", "e", "", "User's email")
+
 	rootCmd.AddCommand(profilCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
