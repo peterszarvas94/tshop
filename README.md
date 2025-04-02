@@ -12,9 +12,4 @@ go install github.com/peterszarvas94/tshop
 
 ```bash
 tshop --help
-tshop list
-tshop version
-tshop product list
-tshop product info [name]
-tshop profil info
 ```

@@ -18,12 +18,12 @@
 ## Profil
 
 - [x] get profil info
-- [ ] update profil info
+- [x] update profil info
 
 ## Address
 
-- [ ] check addresses
-- [ ] add new address
+- [x] list addresses
+- [x] add new address
 - [ ] remove address
 
 ## Cards

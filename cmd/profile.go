@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -23,7 +22,7 @@ var profilInfoCmd = &cobra.Command{
 	Aliases: []string{"i"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		profil, err := Client.Profile.Me(context.Background())
+		profil, err := Client.Profile.Me(cmd.Context())
 		if err != nil {
 			panic(err.Error())
 		}
@@ -43,14 +42,27 @@ var profilUpdateCmd = &cobra.Command{
 	Aliases: []string{"u"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		if name == "" || email == "" {
+		if User.Name == "" && User.Email == "" {
 			cmd.Usage()
 			os.Exit(1)
 		}
 
+		oldProfil, err := Client.Profile.Me(cmd.Context())
+		if err != nil {
+			panic(err.Error())
+		}
+
+		if User.Name == "" {
+			User.Name = oldProfil.Data.User.Name
+		}
+
+		if User.Email == "" {
+			User.Email = oldProfil.Data.User.Email
+		}
+
 		profil, err := Client.Profile.Update(cmd.Context(), terminal.ProfileUpdateParams{
-			Name:  terminal.F(name),
-			Email: terminal.F(email),
+			Name:  terminal.F(User.Name),
+			Email: terminal.F(User.Email),
 		})
 		if err != nil {
 			panic(err.Error())

@@ -1,0 +1,71 @@
+package cmd
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"text/tabwriter"
+
+	"github.com/spf13/cobra"
+	"github.com/terminaldotshop/terminal-sdk-go"
+)
+
+var addressCmd = &cobra.Command{
+	Use:     "address",
+	Short:   "Manage addresses",
+	Aliases: []string{"a"},
+	Args:    cobra.ExactArgs(0),
+}
+
+var listAddressesCmd = &cobra.Command{
+	Use:     "list",
+	Short:   "List all addresses",
+	Aliases: []string{"l"},
+	Args:    cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		addresses, err := Client.Address.List(context.Background())
+		if err != nil {
+			panic(err.Error())
+		}
+
+		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+		fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
+		fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
+		for _, address := range addresses.Data {
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2)
+		}
+		w.Flush()
+	},
+}
+
+var createAddressCmd = &cobra.Command{
+	Use:     "create",
+	Short:   "Create address",
+	Aliases: []string{"c"},
+	Args:    cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		address, err := Client.Address.New(cmd.Context(), terminal.AddressNewParams{
+			Name:     terminal.F(Address.Name),
+			Country:  terminal.F(Address.Country),
+			Province: terminal.F(Address.Province),
+			City:     terminal.F(Address.City),
+			Zip:      terminal.F(Address.Zip),
+			Street1:  terminal.F(Address.Street1),
+			Street2:  terminal.F(Address.Street2),
+			Phone:    terminal.F(Address.Phone),
+		})
+
+		if err != nil {
+			panic(err)
+		}
+
+		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+		fmt.Fprintln(w, "Successfully added address")
+		fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
+		fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.Data, Address.Name, Address.Country, Address.Province, Address.City, Address.Zip, Address.Street1, Address.Street2)
+		w.Flush()
+
+	},
+}

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -23,19 +22,19 @@ var listProductsCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		products, err := Client.Product.List(context.Background())
+		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
 			panic(err.Error())
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
 
-		fmt.Fprintln(w, "Name\tVariant\tPrice")
-		fmt.Fprintln(w, "----\t-------\t-----")
+		fmt.Fprintln(w, "ID\tName\tVariant\tPrice")
+		fmt.Fprintln(w, "--\t----\t-------\t-----")
 		for _, product := range products.Data {
 			for _, variant := range product.Variants {
 				price := fmt.Sprintf("$%.2f", float64(variant.Price)/100)
-				fmt.Fprintf(w, "%s\t%s\t%s\n", product.Name, variant.Name, price)
+				fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", variant.ID, product.Name, variant.Name, price)
 			}
 		}
 		w.Flush()
@@ -44,11 +43,11 @@ var listProductsCmd = &cobra.Command{
 
 var getProductCmd = &cobra.Command{
 	Use:     "info [name]",
-	Short:   "Get description of a product",
+	Short:   "Get description of a product by name",
 	Aliases: []string{"i"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		products, err := Client.Product.List(context.Background())
+		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
 			panic(err.Error())
 		}
