@@ -24,7 +24,7 @@ var profilInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profil, err := Client.Profile.Me(cmd.Context())
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error getting the profil")
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
@@ -49,7 +49,9 @@ var profilUpdateCmd = &cobra.Command{
 
 		oldProfil, err := Client.Profile.Me(cmd.Context())
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error getting the profil")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		if User.Name == "" {
@@ -65,7 +67,9 @@ var profilUpdateCmd = &cobra.Command{
 			Email: terminal.F(User.Email),
 		})
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error updating the profil")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)

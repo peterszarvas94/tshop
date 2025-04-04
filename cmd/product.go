@@ -24,7 +24,9 @@ var listProductsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error getting the products")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
@@ -49,7 +51,9 @@ var getProductCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error getting the products")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		var product *terminal.Product
@@ -57,6 +61,11 @@ var getProductCmd = &cobra.Command{
 			if p.Name == args[0] {
 				product = &p
 			}
+		}
+
+		if product == nil {
+			fmt.Printf("There is no product with the name \"%s\"\n", args[0])
+			os.Exit(1)
 		}
 
 		fmt.Println(product.Description)

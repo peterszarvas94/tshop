@@ -19,7 +19,9 @@ var Client *terminal.Client
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error running the command")
+		fmt.Println(err.Error())
+		os.Exit(1)
 		os.Exit(1)
 	}
 }

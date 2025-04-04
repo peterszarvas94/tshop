@@ -25,7 +25,9 @@ var listAddressesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		addresses, err := Client.Address.List(context.Background())
 		if err != nil {
-			panic(err.Error())
+			fmt.Println("Error getting the addresses")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
@@ -57,7 +59,9 @@ var createAddressCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			panic(err)
+			fmt.Println("Error creating the address")
+			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
