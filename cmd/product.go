@@ -31,12 +31,12 @@ var listProductsCmd = &cobra.Command{
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
 
-		fmt.Fprintln(w, "ID\tName\tVariant\tPrice")
-		fmt.Fprintln(w, "--\t----\t-------\t-----")
+		fmt.Fprintln(w, "Product ID\tVariant ID\tName\tVariant\tPrice")
+		fmt.Fprintln(w, "----------\t----------\t-----\t------\t-----")
 		for _, product := range products.Data {
 			for _, variant := range product.Variants {
 				price := fmt.Sprintf("$%.2f", float64(variant.Price)/100)
-				fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", variant.ID, product.Name, variant.Name, price)
+				fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, variant.Name, price)
 			}
 		}
 		w.Flush()
@@ -62,15 +62,13 @@ var describeProductCmd = &cobra.Command{
 				found = &product
 				break
 			}
-			for _, variant := range product.Variants {
-				if variant.ID == args[0] {
-					found = &product
-				}
+			if product.ID == args[0] {
+				found = &product
 			}
 		}
 
 		if found == nil {
-			fmt.Printf("There is no product with the name \"%s\"\n", args[0])
+			fmt.Printf("There is no product with the name or ID \"%s\"\n", args[0])
 			os.Exit(1)
 		}
 
