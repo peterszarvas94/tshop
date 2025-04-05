@@ -30,14 +30,7 @@ var listAddressesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-		fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
-		fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
-		for _, address := range addresses.Data {
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2)
-		}
-		w.Flush()
+		printAddresses(addresses.Data)
 	},
 }
 
@@ -83,4 +76,16 @@ var deleteAddressCmd = &cobra.Command{
 
 		fmt.Println("Address deleted")
 	},
+}
+
+func printAddresses(addresses []terminal.Address) {
+
+	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
+	fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
+	for _, address := range addresses {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2)
+	}
+	w.Flush()
 }

@@ -76,11 +76,13 @@ func init() {
 
 	// cart
 	cartCmd.AddCommand(cartInfoCmd)
-	addItemToCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
-	addItemToCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
-	addItemToCartCmd.MarkFlagRequired("variant")
-	addItemToCartCmd.MarkFlagRequired("quantity")
-	cartCmd.AddCommand(addItemToCartCmd)
+	updateItemInCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
+	updateItemInCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
+	updateItemInCartCmd.MarkFlagRequired("variant")
+	updateItemInCartCmd.MarkFlagRequired("quantity")
+	cartCmd.AddCommand(updateItemInCartCmd)
+	cartCmd.AddCommand(selectAddressForCartCmd)
+	cartCmd.AddCommand(selectCardForCartCmd)
 	rootCmd.AddCommand(cartCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {

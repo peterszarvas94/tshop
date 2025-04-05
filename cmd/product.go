@@ -5,6 +5,7 @@ import (
 	"os"
 	"text/tabwriter"
 
+	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
 	"github.com/terminaldotshop/terminal-sdk-go"
 )
@@ -29,17 +30,7 @@ var listProductsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-		fmt.Fprintln(w, "Product ID\tVariant ID\tName\tVariant\tPrice")
-		fmt.Fprintln(w, "----------\t----------\t-----\t------\t-----")
-		for _, product := range products.Data {
-			for _, variant := range product.Variants {
-				price := fmt.Sprintf("$%.2f", float64(variant.Price)/100)
-				fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, variant.Name, price)
-			}
-		}
-		w.Flush()
+		printProducts(products.Data)
 	},
 }
 
@@ -74,4 +65,18 @@ var describeProductCmd = &cobra.Command{
 
 		fmt.Println(found.Description)
 	},
+}
+
+func printProducts(products []terminal.Product) {
+	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Fprintln(w, "Product ID\tVariant ID\tName\tVariant\tPrice")
+	fmt.Fprintln(w, "----------\t----------\t-----\t------\t-----")
+	for _, product := range products {
+		for _, variant := range product.Variants {
+			price := helpers.PrettyPrice(variant.Price)
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, variant.Name, price)
+		}
+	}
+	w.Flush()
 }

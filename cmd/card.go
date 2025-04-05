@@ -7,6 +7,7 @@ import (
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
+	"github.com/terminaldotshop/terminal-sdk-go"
 )
 
 var cardCmd = &cobra.Command{
@@ -29,16 +30,7 @@ var listCardsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-		fmt.Fprintln(w, "ID\tBrand\tExipration\tNumber")
-		fmt.Fprintln(w, "--\t-----\t----------\t------")
-		for _, card := range cards.Data {
-			expiration := fmt.Sprintf("%d/%d", card.Expiration.Month, card.Expiration.Year)
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", card.ID, card.Brand, expiration, card.Last4)
-		}
-
-		w.Flush()
+		printCards(cards.Data)
 	},
 }
 
@@ -76,4 +68,17 @@ var deleteCardCmd = &cobra.Command{
 
 		fmt.Println("Card deleted succeccfully")
 	},
+}
+
+func printCards(cards []terminal.Card) {
+	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Fprintln(w, "ID\tBrand\tExipration\tNumber")
+	fmt.Fprintln(w, "--\t-----\t----------\t------")
+	for _, card := range cards {
+		expiration := fmt.Sprintf("%d/%d", card.Expiration.Month, card.Expiration.Year)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", card.ID, card.Brand, expiration, card.Last4)
+	}
+
+	w.Flush()
 }

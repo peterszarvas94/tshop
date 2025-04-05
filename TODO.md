@@ -3,16 +3,16 @@
 ## Auth
 
 - [x] token from env
-- [ ] token from command
 
 ## Shop
 
 - [x] list all products
 - [x] get product info (desctiption)
-- [x] add items to card
-- [ ] remove from cart
+- [x] update items to card
 - [x] check cart
 - [ ] clear cart
+- [x] set address
+- [x] set card
 
 ## User
 
@@ -35,3 +35,4 @@
 
 - [ ] place order
 - [ ] check orders
+- [ ] get order info
