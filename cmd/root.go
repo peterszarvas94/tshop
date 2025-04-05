@@ -29,6 +29,7 @@ func Execute() {
 // these stucts hold the flags
 var User = &terminal.ProfileUser{}
 var Address = &terminal.Address{}
+var Item = &terminal.CartItem{}
 
 func init() {
 	// version
@@ -39,12 +40,12 @@ func init() {
 	productCmd.AddCommand(describeProductCmd)
 	rootCmd.AddCommand(productCmd)
 
-	// profil
-	profilCmd.AddCommand(profilInfoCmd)
-	profilCmd.AddCommand(profilUpdateCmd)
-	profilUpdateCmd.Flags().StringVarP(&User.Name, "name", "n", "", "Name")
-	profilUpdateCmd.Flags().StringVarP(&User.Email, "email", "e", "", "Email")
-	rootCmd.AddCommand(profilCmd)
+	// user
+	userCmd.AddCommand(userInfoCmd)
+	userCmd.AddCommand(userUpdateCmd)
+	userUpdateCmd.Flags().StringVarP(&User.Name, "name", "n", "", "Name")
+	userUpdateCmd.Flags().StringVarP(&User.Email, "email", "e", "", "Email")
+	rootCmd.AddCommand(userCmd)
 
 	// address
 	addressCmd.AddCommand(listAddressesCmd)
@@ -72,6 +73,15 @@ func init() {
 	cardCmd.AddCommand(addCardCmd)
 	cardCmd.AddCommand(deleteCardCmd)
 	rootCmd.AddCommand(cardCmd)
+
+	// cart
+	cartCmd.AddCommand(cartInfoCmd)
+	addItemToCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
+	addItemToCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
+	addItemToCartCmd.MarkFlagRequired("variant")
+	addItemToCartCmd.MarkFlagRequired("quantity")
+	cartCmd.AddCommand(addItemToCartCmd)
+	rootCmd.AddCommand(cartCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		token, ok := os.LookupEnv("TERMINAL_TOKEN")

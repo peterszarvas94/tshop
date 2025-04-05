@@ -47,7 +47,7 @@ var createAddressCmd = &cobra.Command{
 	Aliases: []string{"c"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		address, err := Client.Address.New(cmd.Context(), terminal.AddressNewParams{
+		_, err := Client.Address.New(cmd.Context(), terminal.AddressNewParams{
 			Name:     terminal.F(Address.Name),
 			Country:  terminal.F(Address.Country),
 			Province: terminal.F(Address.Province),
@@ -64,13 +64,7 @@ var createAddressCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-		fmt.Fprintln(w, "Successfully added address")
-		fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
-		fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.Data, Address.Name, Address.Country, Address.Province, Address.City, Address.Zip, Address.Street1, Address.Street2)
-		w.Flush()
-
+		fmt.Println("Address created")
 	},
 }
 
@@ -87,6 +81,6 @@ var deleteAddressCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Address is deleted")
+		fmt.Println("Address deleted")
 	},
 }

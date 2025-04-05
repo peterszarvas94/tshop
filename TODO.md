@@ -9,28 +9,27 @@
 
 - [x] list all products
 - [x] get product info (desctiption)
-- [ ] add items to card
-- [ ] add to card
+- [x] add items to card
 - [ ] remove from cart
-- [ ] check cart
-- [ ] clear card
+- [x] check cart
+- [ ] clear cart
 
-## Profil
+## User
 
-- [x] get profil info
-- [x] update profil info
+- [x] get user info
+- [x] update user info
 
 ## Address
 
 - [x] list addresses
 - [x] add new address
-- [ ] remove address
+- [x] remove address
 
 ## Cards
 
-- [ ] check cards
-- [ ] add new card
-- [ ] remove card
+- [x] check cards
+- [x] add new card
+- [x] remove card
 
 ## Order
 
