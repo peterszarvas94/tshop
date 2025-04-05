@@ -49,7 +49,7 @@ func init() {
 
 	// product
 	productCmd.AddCommand(listProductsCmd)
-	productCmd.AddCommand(getProductCmd)
+	productCmd.AddCommand(describeProductCmd)
 	rootCmd.AddCommand(productCmd)
 
 	// profil
@@ -77,6 +77,7 @@ func init() {
 	createAddressCmd.MarkFlagRequired("zip")
 	createAddressCmd.MarkFlagRequired("street1")
 	createAddressCmd.MarkFlagRequired("phone")
+	addressCmd.AddCommand(deleteAddressCmd)
 	rootCmd.AddCommand(addressCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
