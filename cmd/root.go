@@ -11,7 +11,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "tshop",
-	Short: "CLI for terminal.shop",
+	Short: "tshop - CLI for terminal.shop",
 	Args:  cobra.ExactArgs(0),
 }
 
@@ -27,21 +27,8 @@ func Execute() {
 }
 
 // these stucts hold the flags
-var User = &terminal.ProfileUser{
-	Name:  "",
-	Email: "",
-}
-
-var Address = &terminal.Address{
-	Name:     "",
-	Country:  "",
-	Province: "",
-	City:     "",
-	Zip:      "",
-	Street1:  "",
-	Street2:  "",
-	Phone:    "",
-}
+var User = &terminal.ProfileUser{}
+var Address = &terminal.Address{}
 
 func init() {
 	// version
@@ -79,6 +66,12 @@ func init() {
 	createAddressCmd.MarkFlagRequired("phone")
 	addressCmd.AddCommand(deleteAddressCmd)
 	rootCmd.AddCommand(addressCmd)
+
+	// card
+	cardCmd.AddCommand(listCardsCmd)
+	cardCmd.AddCommand(addCardCmd)
+	cardCmd.AddCommand(deleteCardCmd)
+	rootCmd.AddCommand(cardCmd)
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		token, ok := os.LookupEnv("TERMINAL_TOKEN")
