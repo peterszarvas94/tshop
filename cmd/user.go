@@ -67,8 +67,9 @@ var userUpdateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Successfully modified user")
-		helpers.PrintUser(user.Data.User)
+		helpers.Section("User info updated", func() {
+			helpers.PrintUser(user.Data.User)
+		})
 	},
 }
 

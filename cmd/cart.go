@@ -36,13 +36,13 @@ var cartInfoCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Items in cart:")
-		helpers.PrintCartItems(cart.Data.Items, products.Data)
-		fmt.Println()
+		helpers.Section("Items in cart:", func() {
+			helpers.PrintCartItems(cart.Data.Items, products.Data)
+		})
 
-		fmt.Println("Subtotal:")
-		fmt.Println(helpers.PrettyPrice(cart.Data.Subtotal))
-		fmt.Println()
+		helpers.Section("Subtotal:", func() {
+			fmt.Println(helpers.FormatPrice(cart.Data.Subtotal))
+		})
 
 		address, err := Client.Address.Get(cmd.Context(), cart.Data.AddressID)
 		if err != nil {
@@ -51,9 +51,9 @@ var cartInfoCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Selected address:")
-		helpers.PrintAddresses([]terminal.Address{address.Data})
-		fmt.Println()
+		helpers.Section("Selected address:", func() {
+			helpers.PrintAddresses([]terminal.Address{address.Data})
+		})
 
 		card, err := Client.Card.Get(cmd.Context(), cart.Data.CardID)
 		if err != nil {
@@ -62,9 +62,9 @@ var cartInfoCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Selected card:")
-		helpers.PrintCards([]terminal.Card{card.Data})
-
+		helpers.Section("Selected card:", func() {
+			helpers.PrintCards([]terminal.Card{card.Data})
+		})
 	},
 }
 
@@ -90,16 +90,16 @@ var updateItemInCartCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		fmt.Println("Item in cart updated")
+		helpers.Section("Item in cart updated", func() {
+			products, err := Client.Product.List(cmd.Context())
+			if err != nil {
+				fmt.Println("Could not get products")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
 
-		products, err := Client.Product.List(cmd.Context())
-		if err != nil {
-			fmt.Println("Could not get products")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-
-		helpers.PrintCartItems(cart.Data.Items, products.Data)
+			helpers.PrintCartItems(cart.Data.Items, products.Data)
+		})
 	},
 }
 
@@ -118,15 +118,16 @@ var selectAddressForCartCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		address, err := Client.Address.Get(cmd.Context(), args[0])
-		if err != nil {
-			fmt.Println("Address selected, but could not get address info")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
+		helpers.Section("Address selected", func() {
+			address, err := Client.Address.Get(cmd.Context(), args[0])
+			if err != nil {
+				fmt.Println("Could not get address info")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
 
-		helpers.PrintAddresses([]terminal.Address{address.Data})
-		fmt.Println("Address selected")
+			helpers.PrintAddresses([]terminal.Address{address.Data})
+		})
 	},
 }
 
@@ -145,15 +146,16 @@ var selectCardForCartCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		card, err := Client.Card.Get(cmd.Context(), args[0])
-		if err != nil {
-			fmt.Println("Card selected, but could not get card info")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
+		helpers.Section("Card selected", func() {
+			card, err := Client.Card.Get(cmd.Context(), args[0])
+			if err != nil {
+				fmt.Println("Could not get card info")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
 
-		fmt.Println("Card selected")
-		helpers.PrintCards([]terminal.Card{card.Data})
+			helpers.PrintCards([]terminal.Card{card.Data})
+		})
 	},
 }
 
@@ -174,6 +176,25 @@ var clearCartCmd = &cobra.Command{
 	},
 }
 
+var placeOrderCmd = &cobra.Command{
+	Use:     "order",
+	Short:   "Place order with current shopping cart",
+	Aliases: []string{"o"},
+	Args:    cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		res, err := Client.Cart.Convert(cmd.Context())
+		if err != nil {
+			fmt.Println("Could place order")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
+		helpers.Section("Order placed", func() {
+			helpers.PrintOrders([]terminal.Order{res.Data})
+		})
+	},
+}
+
 func init() {
 	cartCmd.AddCommand(cartInfoCmd)
 	updateItemInCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
@@ -184,5 +205,6 @@ func init() {
 	cartCmd.AddCommand(selectAddressForCartCmd)
 	cartCmd.AddCommand(selectCardForCartCmd)
 	cartCmd.AddCommand(clearCartCmd)
+	cartCmd.AddCommand(placeOrderCmd)
 	rootCmd.AddCommand(cartCmd)
 }

@@ -40,7 +40,7 @@ var createAddressCmd = &cobra.Command{
 	Aliases: []string{"c"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		_, err := Client.Address.New(cmd.Context(), terminal.AddressNewParams{
+		res, err := Client.Address.New(cmd.Context(), terminal.AddressNewParams{
 			Name:     terminal.F(Address.Name),
 			Country:  terminal.F(Address.Country),
 			Province: terminal.F(Address.Province),
@@ -57,7 +57,10 @@ var createAddressCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Address created")
+		helpers.Section("Address created", func() {
+			Address.ID = res.Data
+			helpers.PrintAddresses([]terminal.Address{*Address})
+		})
 	},
 }
 
