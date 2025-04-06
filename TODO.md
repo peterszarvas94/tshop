@@ -10,7 +10,7 @@
 - [x] get product info (desctiption)
 - [x] update items to card
 - [x] check cart
-- [ ] clear cart
+- [x] clear cart
 - [x] set address
 - [x] set card
 

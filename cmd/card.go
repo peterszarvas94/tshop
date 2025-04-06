@@ -3,11 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
-	"github.com/terminaldotshop/terminal-sdk-go"
 )
 
 var cardCmd = &cobra.Command{
@@ -30,7 +28,7 @@ var listCardsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		printCards(cards.Data)
+		helpers.PrintCards(cards.Data)
 	},
 }
 
@@ -70,15 +68,9 @@ var deleteCardCmd = &cobra.Command{
 	},
 }
 
-func printCards(cards []terminal.Card) {
-	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-	fmt.Fprintln(w, "ID\tBrand\tExipration\tNumber")
-	fmt.Fprintln(w, "--\t-----\t----------\t------")
-	for _, card := range cards {
-		expiration := fmt.Sprintf("%d/%d", card.Expiration.Month, card.Expiration.Year)
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", card.ID, card.Brand, expiration, card.Last4)
-	}
-
-	w.Flush()
+func init() {
+	cardCmd.AddCommand(listCardsCmd)
+	cardCmd.AddCommand(addCardCmd)
+	cardCmd.AddCommand(deleteCardCmd)
+	rootCmd.AddCommand(cardCmd)
 }

@@ -32,59 +32,6 @@ var Address = &terminal.Address{}
 var Item = &terminal.CartItem{}
 
 func init() {
-	// version
-	rootCmd.AddCommand(versionCmd)
-
-	// product
-	productCmd.AddCommand(listProductsCmd)
-	productCmd.AddCommand(describeProductCmd)
-	rootCmd.AddCommand(productCmd)
-
-	// user
-	userCmd.AddCommand(userInfoCmd)
-	userCmd.AddCommand(userUpdateCmd)
-	userUpdateCmd.Flags().StringVarP(&User.Name, "name", "n", "", "Name")
-	userUpdateCmd.Flags().StringVarP(&User.Email, "email", "e", "", "Email")
-	rootCmd.AddCommand(userCmd)
-
-	// address
-	addressCmd.AddCommand(listAddressesCmd)
-	addressCmd.AddCommand(createAddressCmd)
-	createAddressCmd.Flags().StringVarP(&Address.Name, "name", "n", "", "Name")
-	createAddressCmd.Flags().StringVarP(&Address.Country, "country", "c", "", "Country")
-	createAddressCmd.Flags().StringVarP(&Address.Province, "province", "p", "", "Province")
-	createAddressCmd.Flags().StringVarP(&Address.City, "city", "y", "", "City")
-	createAddressCmd.Flags().StringVarP(&Address.Zip, "zip", "z", "", "Zip")
-	createAddressCmd.Flags().StringVarP(&Address.Street1, "street1", "s", "", "Street1")
-	createAddressCmd.Flags().StringVarP(&Address.Street2, "street2", "t", "", "Street2")
-	createAddressCmd.Flags().StringVarP(&Address.Phone, "phone", "o", "", "Phone")
-	createAddressCmd.MarkFlagRequired("name")
-	createAddressCmd.MarkFlagRequired("country")
-	createAddressCmd.MarkFlagRequired("province")
-	createAddressCmd.MarkFlagRequired("city")
-	createAddressCmd.MarkFlagRequired("zip")
-	createAddressCmd.MarkFlagRequired("street1")
-	createAddressCmd.MarkFlagRequired("phone")
-	addressCmd.AddCommand(deleteAddressCmd)
-	rootCmd.AddCommand(addressCmd)
-
-	// card
-	cardCmd.AddCommand(listCardsCmd)
-	cardCmd.AddCommand(addCardCmd)
-	cardCmd.AddCommand(deleteCardCmd)
-	rootCmd.AddCommand(cardCmd)
-
-	// cart
-	cartCmd.AddCommand(cartInfoCmd)
-	updateItemInCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
-	updateItemInCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
-	updateItemInCartCmd.MarkFlagRequired("variant")
-	updateItemInCartCmd.MarkFlagRequired("quantity")
-	cartCmd.AddCommand(updateItemInCartCmd)
-	cartCmd.AddCommand(selectAddressForCartCmd)
-	cartCmd.AddCommand(selectCardForCartCmd)
-	rootCmd.AddCommand(cartCmd)
-
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		token, ok := os.LookupEnv("TERMINAL_TOKEN")
 		if !ok || token == "" {

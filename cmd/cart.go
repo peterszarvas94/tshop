@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -12,14 +11,14 @@ import (
 
 var cartCmd = &cobra.Command{
 	Use:     "cart",
-	Short:   "Manage cart",
+	Short:   "Manage shopping cart",
 	Aliases: []string{"s"},
 	Args:    cobra.ExactArgs(0),
 }
 
 var cartInfoCmd = &cobra.Command{
 	Use:     "info",
-	Short:   "Get cart info",
+	Short:   "Get shopping cart info",
 	Aliases: []string{"i"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -30,8 +29,19 @@ var cartInfoCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		products, err := Client.Product.List(cmd.Context())
+		if err != nil {
+			fmt.Println("Could not get products")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
 		fmt.Println("Items in cart:")
-		printCartItems(cart.Data.Items)
+		helpers.PrintCartItems(cart.Data.Items, products.Data)
+		fmt.Println()
+
+		fmt.Println("Subtotal:")
+		fmt.Println(helpers.PrettyPrice(cart.Data.Subtotal))
 		fmt.Println()
 
 		address, err := Client.Address.Get(cmd.Context(), cart.Data.AddressID)
@@ -42,7 +52,7 @@ var cartInfoCmd = &cobra.Command{
 		}
 
 		fmt.Println("Selected address:")
-		printAddresses([]terminal.Address{address.Data})
+		helpers.PrintAddresses([]terminal.Address{address.Data})
 		fmt.Println()
 
 		card, err := Client.Card.Get(cmd.Context(), cart.Data.CardID)
@@ -53,15 +63,15 @@ var cartInfoCmd = &cobra.Command{
 		}
 
 		fmt.Println("Selected card:")
-		printCards([]terminal.Card{card.Data})
+		helpers.PrintCards([]terminal.Card{card.Data})
 
 	},
 }
 
 var updateItemInCartCmd = &cobra.Command{
 	Use:     "update",
-	Short:   "Add / Update item in cart",
-	Long:    "Add / Update item in cart.\nIf the item does not exists in the cart yet, this command will add it.\nIf the item is already in the cart, it will overwrite the quantity.\nIf you set it to zero, it will delete the item from the cart.",
+	Short:   "Add / Update item in shopping cart",
+	Long:    "Add / Update item in shopping cart.\nIf the item does not exists in the cart yet, this command will add it.\nIf the item is already in the cart, it will overwrite the quantity.\nIf you set it to zero, it will delete the item from the cart.",
 	Aliases: []string{"u"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -81,13 +91,21 @@ var updateItemInCartCmd = &cobra.Command{
 		}
 
 		fmt.Println("Item in cart updated")
-		printCartItems(cart.Data.Items)
+
+		products, err := Client.Product.List(cmd.Context())
+		if err != nil {
+			fmt.Println("Could not get products")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
+		helpers.PrintCartItems(cart.Data.Items, products.Data)
 	},
 }
 
 var selectAddressForCartCmd = &cobra.Command{
 	Use:     "address",
-	Short:   "Select address",
+	Short:   "Select address for shopping cart",
 	Aliases: []string{"a"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -107,14 +125,14 @@ var selectAddressForCartCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		printAddresses([]terminal.Address{address.Data})
+		helpers.PrintAddresses([]terminal.Address{address.Data})
 		fmt.Println("Address selected")
 	},
 }
 
 var selectCardForCartCmd = &cobra.Command{
 	Use:     "card",
-	Short:   "Select card",
+	Short:   "Select card for shopping cart",
 	Aliases: []string{"a"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -135,18 +153,36 @@ var selectCardForCartCmd = &cobra.Command{
 		}
 
 		fmt.Println("Card selected")
-		printCards([]terminal.Card{card.Data})
+		helpers.PrintCards([]terminal.Card{card.Data})
 	},
 }
 
-func printCartItems(items []terminal.CartItem) {
-	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+var clearCartCmd = &cobra.Command{
+	Use:     "clear",
+	Short:   "Clear shopping cart",
+	Aliases: []string{"c"},
+	Args:    cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		_, err := Client.Cart.Clear(cmd.Context())
+		if err != nil {
+			fmt.Println("Could not clear shopping cart")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
 
-	fmt.Fprintln(w, "Variant ID\tQuantity\tSubtotal")
-	fmt.Fprintln(w, "----------\t--------\t--------")
-	for _, item := range items {
-		total := helpers.PrettyPrice(item.Subtotal)
-		fmt.Fprintf(w, "%s\t%d\t%s\n", item.ProductVariantID, item.Quantity, total)
-	}
-	w.Flush()
+		fmt.Println("Shopping cart cleared")
+	},
+}
+
+func init() {
+	cartCmd.AddCommand(cartInfoCmd)
+	updateItemInCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
+	updateItemInCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
+	updateItemInCartCmd.MarkFlagRequired("variant")
+	updateItemInCartCmd.MarkFlagRequired("quantity")
+	cartCmd.AddCommand(updateItemInCartCmd)
+	cartCmd.AddCommand(selectAddressForCartCmd)
+	cartCmd.AddCommand(selectCardForCartCmd)
+	cartCmd.AddCommand(clearCartCmd)
+	rootCmd.AddCommand(cartCmd)
 }

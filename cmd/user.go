@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
+	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
 	"github.com/terminaldotshop/terminal-sdk-go"
 )
@@ -27,12 +27,7 @@ var userInfoCmd = &cobra.Command{
 			fmt.Println("Error getting the user")
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-		fmt.Fprintln(w, "Name\tEmail")
-		fmt.Fprintln(w, "----\t-----")
-		fmt.Fprintf(w, "%s\t%s\n", user.Data.User.Name, user.Data.User.Email)
-		w.Flush()
+		helpers.PrintUser(user.Data.User)
 	},
 }
 
@@ -72,12 +67,15 @@ var userUpdateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-		fmt.Fprintln(w, "Successfully modified user")
-		fmt.Fprintln(w, "Name\tEmail")
-		fmt.Fprintln(w, "----\t-----")
-		fmt.Fprintf(w, "%s\t%s\n", user.Data.User.Name, user.Data.User.Email)
-		w.Flush()
+		fmt.Println("Successfully modified user")
+		helpers.PrintUser(user.Data.User)
 	},
+}
+
+func init() {
+	userCmd.AddCommand(userInfoCmd)
+	userCmd.AddCommand(userUpdateCmd)
+	userUpdateCmd.Flags().StringVarP(&User.Name, "name", "n", "", "Name")
+	userUpdateCmd.Flags().StringVarP(&User.Email, "email", "e", "", "Email")
+	rootCmd.AddCommand(userCmd)
 }

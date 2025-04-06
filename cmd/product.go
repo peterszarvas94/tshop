@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"text/tabwriter"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -30,7 +29,7 @@ var listProductsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		printProducts(products.Data)
+		helpers.PrintProducts(products.Data)
 	},
 }
 
@@ -67,16 +66,8 @@ var describeProductCmd = &cobra.Command{
 	},
 }
 
-func printProducts(products []terminal.Product) {
-	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-	fmt.Fprintln(w, "Product ID\tVariant ID\tName\tVariant\tPrice")
-	fmt.Fprintln(w, "----------\t----------\t-----\t------\t-----")
-	for _, product := range products {
-		for _, variant := range product.Variants {
-			price := helpers.PrettyPrice(variant.Price)
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, variant.Name, price)
-		}
-	}
-	w.Flush()
+func init() {
+	productCmd.AddCommand(listProductsCmd)
+	productCmd.AddCommand(describeProductCmd)
+	rootCmd.AddCommand(productCmd)
 }

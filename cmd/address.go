@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"text/tabwriter"
 
+	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
 	"github.com/terminaldotshop/terminal-sdk-go"
 )
@@ -30,7 +30,7 @@ var listAddressesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		printAddresses(addresses.Data)
+		helpers.PrintAddresses(addresses.Data)
 	},
 }
 
@@ -78,14 +78,24 @@ var deleteAddressCmd = &cobra.Command{
 	},
 }
 
-func printAddresses(addresses []terminal.Address) {
-
-	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
-
-	fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
-	fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
-	for _, address := range addresses {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2)
-	}
-	w.Flush()
+func init() {
+	addressCmd.AddCommand(listAddressesCmd)
+	addressCmd.AddCommand(createAddressCmd)
+	createAddressCmd.Flags().StringVarP(&Address.Name, "name", "n", "", "Name")
+	createAddressCmd.Flags().StringVarP(&Address.Country, "country", "c", "", "Country")
+	createAddressCmd.Flags().StringVarP(&Address.Province, "province", "p", "", "Province")
+	createAddressCmd.Flags().StringVarP(&Address.City, "city", "y", "", "City")
+	createAddressCmd.Flags().StringVarP(&Address.Zip, "zip", "z", "", "Zip")
+	createAddressCmd.Flags().StringVarP(&Address.Street1, "street1", "s", "", "Street1")
+	createAddressCmd.Flags().StringVarP(&Address.Street2, "street2", "t", "", "Street2")
+	createAddressCmd.Flags().StringVarP(&Address.Phone, "phone", "o", "", "Phone")
+	createAddressCmd.MarkFlagRequired("name")
+	createAddressCmd.MarkFlagRequired("country")
+	createAddressCmd.MarkFlagRequired("province")
+	createAddressCmd.MarkFlagRequired("city")
+	createAddressCmd.MarkFlagRequired("zip")
+	createAddressCmd.MarkFlagRequired("street1")
+	createAddressCmd.MarkFlagRequired("phone")
+	addressCmd.AddCommand(deleteAddressCmd)
+	rootCmd.AddCommand(addressCmd)
 }

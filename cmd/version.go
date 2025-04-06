@@ -17,3 +17,7 @@ var versionCmd = &cobra.Command{
 		fmt.Println(constants.Version)
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(versionCmd)
+}
