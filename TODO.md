@@ -33,6 +33,6 @@
 
 ## Order
 
-- [ ] place order
-- [ ] check orders
-- [ ] get order info
+- [x] place order
+- [x] list orders
+- [x] get order info
