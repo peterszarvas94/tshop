@@ -125,7 +125,7 @@ var subInfoCmd = &cobra.Command{
 var cancelSubCmd = &cobra.Command{
 	Use:     "cancel [id]",
 	Short:   "Cancel a subscription",
-	Aliases: []string{"x"},
+	Aliases: []string{"delete", "x"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Subscription.Delete(cmd.Context(), args[0])

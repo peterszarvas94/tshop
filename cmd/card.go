@@ -54,7 +54,7 @@ var addCardCmd = &cobra.Command{
 var deleteCardCmd = &cobra.Command{
 	Use:     "delete",
 	Short:   "Delete card",
-	Aliases: []string{"d"},
+	Aliases: []string{"x"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Card.Delete(cmd.Context(), args[0])

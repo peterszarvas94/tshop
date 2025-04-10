@@ -66,7 +66,7 @@ var createAddressCmd = &cobra.Command{
 var deleteAddressCmd = &cobra.Command{
 	Use:     "delete [id]",
 	Short:   "Delete address",
-	Aliases: []string{"d"},
+	Aliases: []string{"x"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Address.Delete(cmd.Context(), args[0])

@@ -174,3 +174,14 @@ func PrintSubs(products []terminal.Product, subscriptions []terminal.Subscriptio
 	}
 	w.Flush()
 }
+
+func PrintTokens(tokens []terminal.Token) {
+	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Fprintln(w, "ID\tToken\tCreated")
+	fmt.Fprintln(w, "--\t-----\t-------")
+	for _, token := range tokens {
+		fmt.Fprintf(w, "%s\t%s\t%s\n", token.ID, token.Token, token.Created)
+	}
+	w.Flush()
+}

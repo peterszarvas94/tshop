@@ -162,7 +162,7 @@ var selectCardForCartCmd = &cobra.Command{
 var clearCartCmd = &cobra.Command{
 	Use:     "clear",
 	Short:   "Clear shopping cart",
-	Aliases: []string{"x"},
+	Aliases: []string{"delete", "x"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Cart.Clear(cmd.Context())
