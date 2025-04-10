@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -23,7 +22,7 @@ var listAddressesCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		addresses, err := Client.Address.List(context.Background())
+		addresses, err := Client.Address.List(cmd.Context())
 		if err != nil {
 			fmt.Println("Error getting the addresses")
 			fmt.Println(err.Error())

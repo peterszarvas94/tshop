@@ -26,10 +26,11 @@ func Execute() {
 	}
 }
 
-// these stucts hold the flags
+// these hold the flags
 var User = &terminal.ProfileUser{}
 var Address = &terminal.Address{}
 var Item = &terminal.CartItem{}
+var Sub = &terminal.Subscription{}
 
 func init() {
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {

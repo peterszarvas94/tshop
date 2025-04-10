@@ -155,3 +155,22 @@ func PrintOrderTracking(tracking terminal.OrderTracking) {
 	fmt.Fprintf(w, "%s\t%s", tracking.Number, tracking.URL)
 	w.Flush()
 }
+
+func PrintSubs(products []terminal.Product, subscriptions []terminal.Subscription) {
+	variantNameMap := map[string]string{}
+	for _, p := range products {
+		for _, v := range p.Variants {
+			variantNameMap[v.ID] = p.Name
+		}
+	}
+
+	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
+
+	fmt.Fprintln(w, "ID\tQuantity\tVariant ID\tName\tType\tInterval\tNext")
+	fmt.Fprintln(w, "--\t--------\t----------\t----\t----\t--------\t----")
+	for _, sub := range subscriptions {
+		name := variantNameMap[sub.ProductVariantID]
+		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%d\t%s\n", sub.ID, sub.Quantity, sub.ProductVariantID, name, sub.Schedule.Type, sub.Schedule.Interval, sub.Next)
+	}
+	w.Flush()
+}
