@@ -42,7 +42,7 @@ func PrintProducts(products []terminal.Product) {
 	for _, product := range products {
 		for _, variant := range product.Variants {
 			price := PadPrice(variant.Price)
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, variant.Name, price)
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", product.ID, variant.ID, product.Name, convertToGramms(variant.Name), price)
 		}
 	}
 	w.Flush()
@@ -51,8 +51,8 @@ func PrintProducts(products []terminal.Product) {
 func PrintCards(cards []terminal.Card) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
 
-	fmt.Fprintln(w, "ID\tBrand\tExpiration\tNumber")
-	fmt.Fprintln(w, "--\t-----\t----------\t------")
+	fmt.Fprintln(w, "ID\tBrand\tExpiration\tLast 4 digits")
+	fmt.Fprintln(w, "--\t-----\t----------\t-------------")
 	for _, card := range cards {
 		expiration := fmt.Sprintf("%d/%d", card.Expiration.Month, card.Expiration.Year)
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", card.ID, card.Brand, expiration, card.Last4)
