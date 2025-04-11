@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 
+	"github.com/peterszarvas94/tshop/env"
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
 	"github.com/terminaldotshop/terminal-sdk-go"
@@ -70,29 +70,14 @@ var deleteTokenCmd = &cobra.Command{
 	Aliases: []string{"revoke", "x"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		envToken, ok := os.LookupEnv("TERMINAL_TOKEN")
-		if !ok || envToken == "" {
-			fmt.Printf("Environment variable \"TERMINAL_TOKEN\" is missing\n")
-			os.Exit(1)
-		}
-
-		envTokenEnd := envToken[len(envToken)-4:]
-
-		token, err := Client.Token.Get(cmd.Context(), args[0])
-		if err != nil {
-			fmt.Println("Error getting tokens")
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-
-		if strings.HasSuffix(token.Data.Token, envTokenEnd) {
-			if !helpers.Confirm("This token possibly used by your environment, do you want to delete it?") {
+		if env.Config.TERMINAL_TOKEN_ID == args[0] {
+			if !helpers.Confirm("This token is used by your environment, do you want to delete it?") {
 				fmt.Println("Cancelled")
 				os.Exit(0)
 			}
 		}
 
-		_, err = Client.Token.Delete(cmd.Context(), args[0])
+		_, err := Client.Token.Delete(cmd.Context(), args[0])
 		if err != nil {
 			fmt.Println("Error revoke token")
 			fmt.Println(err.Error())

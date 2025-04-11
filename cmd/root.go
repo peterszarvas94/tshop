@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/peterszarvas94/tshop/env"
 	"github.com/spf13/cobra"
 	"github.com/terminaldotshop/terminal-sdk-go"
 	"github.com/terminaldotshop/terminal-sdk-go/option"
@@ -27,27 +28,18 @@ func Execute() {
 }
 
 // these hold the flags
-var User = &terminal.ProfileUser{}
-var Address = &terminal.Address{}
-var Item = &terminal.CartItem{}
-var Sub = &terminal.Subscription{}
+var (
+	User    = &terminal.ProfileUser{}
+	Address = &terminal.Address{}
+	Item    = &terminal.CartItem{}
+	Sub     = &terminal.Subscription{}
+)
 
 func init() {
+
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		token, ok := os.LookupEnv("TERMINAL_TOKEN")
-		if !ok || token == "" {
-			fmt.Printf("Environment variable \"TERMINAL_TOKEN\" is missing\n")
-			os.Exit(1)
-		}
-
-		env, ok := os.LookupEnv("TERMINAL_ENV")
-		if !ok || env == "" {
-			fmt.Printf("Environment variable \"TERMINAL_ENV\" is missing\n")
-			os.Exit(1)
-		}
-
 		var urlOption option.RequestOption
-		switch env {
+		switch env.Config.TERMINAL_ENV {
 		case ("dev"):
 			urlOption = option.WithEnvironmentDev()
 			break
@@ -61,7 +53,7 @@ func init() {
 
 		Client = terminal.NewClient(
 			urlOption,
-			option.WithBearerToken(token),
+			option.WithBearerToken(env.Config.TERMINAL_TOKEN),
 		)
 	}
 }
