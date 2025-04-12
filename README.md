@@ -1,12 +1,6 @@
 # tshop
 
-CLI for terminal.shop
-
-## Inspiration
-
-The `ssh terminal.shop` experience is fine, but bloated.
-
-I present you the _real_ terminal shopping experience.
+The essence of the [terminal](https://www.terminal.shop) shopping experience - a command-line interface
 
 ## Install
 
