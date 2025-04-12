@@ -11,7 +11,7 @@ I present you the _real_ terminal shopping experience.
 ## Install
 
 ```bash
-go install github.com/peterszarvas94/tshop@v0.0.1
+go install github.com/peterszarvas94/tshop@v1.0.0
 ```
 
 ## Env
