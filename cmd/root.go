@@ -23,7 +23,6 @@ func Execute() {
 		fmt.Println("Error running the command")
 		fmt.Println(err.Error())
 		os.Exit(1)
-		os.Exit(1)
 	}
 }
 

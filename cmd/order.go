@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -23,9 +22,8 @@ var listOrdersCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		orders, err := Client.Order.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get orders")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			fmt.Println("")
+			helpers.HandleError("Error getting the orders", err, 1)
 		}
 
 		helpers.PrintOrders(orders.Data)
@@ -40,16 +38,12 @@ var orderInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		order, err := Client.Order.Get(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Could not get order info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the order", err, 1)
 		}
 
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get products")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the products", err, 1)
 		}
 
 		helpers.Section("Items in order:", func() {

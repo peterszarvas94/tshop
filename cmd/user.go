@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/peterszarvas94/tshop/helpers"
@@ -24,7 +23,7 @@ var userInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		user, err := Client.Profile.Me(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the user")
+			helpers.HandleError("Error getting the user", err, 1)
 		}
 
 		helpers.PrintUser(user.Data.User)
@@ -44,9 +43,7 @@ var userUpdateCmd = &cobra.Command{
 
 		oldProfil, err := Client.Profile.Me(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the user")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the user", err, 1)
 		}
 
 		if User.Name == "" {
@@ -62,9 +59,7 @@ var userUpdateCmd = &cobra.Command{
 			Email: terminal.F(User.Email),
 		})
 		if err != nil {
-			fmt.Println("Error updating the user")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error updating the user", err, 1)
 		}
 
 		helpers.Section("User info updated", func() {

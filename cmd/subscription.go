@@ -23,16 +23,12 @@ var listSubsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		subs, err := Client.Subscription.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the subscriptions")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the subscriptions", err, 1)
 		}
 
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get products")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the products", err, 1)
 		}
 
 		helpers.PrintSubs(products.Data, subs.Data)
@@ -68,11 +64,8 @@ var createSubCmd = &cobra.Command{
 				}),
 			},
 		})
-
 		if err != nil {
-			fmt.Println("Error creating the subscriptions")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error creating the subscription", err, 1)
 		}
 
 		helpers.Section("Subscription created", func() {
@@ -80,16 +73,12 @@ var createSubCmd = &cobra.Command{
 
 			products, err := Client.Product.List(cmd.Context())
 			if err != nil {
-				fmt.Println("Error getting the products")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the products", err, 1)
 			}
 
 			subs, err := Client.Subscription.List(cmd.Context())
 			if err != nil {
-				fmt.Println("Subscription is created, but could not get subscription info")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the subscription", err, 1)
 			}
 
 			var found *terminal.Subscription
@@ -100,8 +89,7 @@ var createSubCmd = &cobra.Command{
 			}
 
 			if found == nil {
-				fmt.Println("Subscription is created, but could not get subscription info")
-				fmt.Println(err.Error())
+				fmt.Println("Could not find subscription")
 				os.Exit(1)
 			}
 
@@ -121,17 +109,13 @@ var subInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		sub, err := Client.Subscription.Get(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Error getting the subscription")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the subscription", err, 1)
 		}
 
 		helpers.Section("Subscription details:", func() {
 			products, err := Client.Product.List(cmd.Context())
 			if err != nil {
-				fmt.Println("Error getting the products")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the products", err, 1)
 			}
 
 			helpers.PrintSubs(products.Data, []terminal.Subscription{sub.Data})
@@ -140,9 +124,7 @@ var subInfoCmd = &cobra.Command{
 		helpers.Section("Subscription address:", func() {
 			address, err := Client.Address.Get(cmd.Context(), sub.Data.AddressID)
 			if err != nil {
-				fmt.Println("Error getting the address info")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the address", err, 1)
 			}
 
 			helpers.PrintAddresses([]terminal.Address{address.Data})
@@ -151,9 +133,7 @@ var subInfoCmd = &cobra.Command{
 		helpers.Section("Subscription card:", func() {
 			card, err := Client.Card.Get(cmd.Context(), sub.Data.CardID)
 			if err != nil {
-				fmt.Println("Error getting the card info")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the card", err, 1)
 			}
 
 			helpers.PrintCards([]terminal.Card{card.Data})
@@ -162,16 +142,14 @@ var subInfoCmd = &cobra.Command{
 }
 
 var cancelSubCmd = &cobra.Command{
-	Use:     "cancel [id]",
-	Short:   "Cancel a subscription",
-	Aliases: []string{"delete", "x"},
+	Use:     "delete [id]",
+	Short:   "Cancel subscription",
+	Aliases: []string{"cancel", "x"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Subscription.Delete(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Error canceling the subscription")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error deleting the subscription", err, 1)
 		}
 
 		fmt.Println("Subscription cancelled")

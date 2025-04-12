@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -23,9 +22,7 @@ var listCardsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cards, err := Client.Card.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not list cards")
-			fmt.Println(err)
-			os.Exit(1)
+			helpers.HandleError("Error getting the cards", err, 1)
 		}
 
 		helpers.PrintCards(cards.Data)
@@ -40,9 +37,7 @@ var addCardCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		res, err := Client.Card.Collect(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not create card")
-			fmt.Println(err)
-			os.Exit(1)
+			helpers.HandleError("Error creating card", err, 1)
 		}
 
 		fmt.Println("Enter card information in the following URL:")
@@ -59,9 +54,7 @@ var deleteCardCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Card.Delete(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Could not delete card")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error deleting the card", err, 1)
 		}
 
 		fmt.Println("Card deleted succeccfully")

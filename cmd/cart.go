@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -24,16 +23,12 @@ var cartInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cart, err := Client.Cart.Get(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get cart info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the cart", err, 1)
 		}
 
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get products")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the products", err, 1)
 		}
 
 		helpers.Section("Items in cart:", func() {
@@ -46,9 +41,7 @@ var cartInfoCmd = &cobra.Command{
 
 		address, err := Client.Address.Get(cmd.Context(), cart.Data.AddressID)
 		if err != nil {
-			fmt.Println("Could not get address info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the address", err, 1)
 		}
 
 		helpers.Section("Selected address:", func() {
@@ -57,9 +50,7 @@ var cartInfoCmd = &cobra.Command{
 
 		card, err := Client.Card.Get(cmd.Context(), cart.Data.CardID)
 		if err != nil {
-			fmt.Println("Could not get card info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the card", err, 1)
 		}
 
 		helpers.Section("Selected card:", func() {
@@ -76,9 +67,7 @@ var addToCartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		oldCart, err := Client.Cart.Get(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get cart info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the cart", err, 1)
 		}
 
 		var count int64 = 0
@@ -101,9 +90,7 @@ var addToCartCmd = &cobra.Command{
 		helpers.Section("Item in cart updated", func() {
 			products, err := Client.Product.List(cmd.Context())
 			if err != nil {
-				fmt.Println("Could not get products")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting products", err, 1)
 			}
 
 			helpers.PrintCartItems(cart.Data.Items, products.Data)
@@ -119,9 +106,7 @@ var removeFromCartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		oldCart, err := Client.Cart.Get(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not get cart info")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the cart", err, 1)
 		}
 
 		var count int64 = 0
@@ -144,9 +129,7 @@ var removeFromCartCmd = &cobra.Command{
 		helpers.Section("Item in cart updated", func() {
 			products, err := Client.Product.List(cmd.Context())
 			if err != nil {
-				fmt.Println("Could not get products")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the products", err, 1)
 			}
 
 			helpers.PrintCartItems(cart.Data.Items, products.Data)
@@ -164,17 +147,13 @@ var selectAddressForCartCmd = &cobra.Command{
 			AddressID: terminal.F(args[0]),
 		})
 		if err != nil {
-			fmt.Println("Could not select address")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error selecting the address", err, 1)
 		}
 
 		helpers.Section("Address selected", func() {
 			address, err := Client.Address.Get(cmd.Context(), args[0])
 			if err != nil {
-				fmt.Println("Could not get address info")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the address", err, 1)
 			}
 
 			helpers.PrintAddresses([]terminal.Address{address.Data})
@@ -192,17 +171,13 @@ var selectCardForCartCmd = &cobra.Command{
 			CardID: terminal.F(args[0]),
 		})
 		if err != nil {
-			fmt.Println("Could not select card")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error selecting the card", err, 1)
 		}
 
 		helpers.Section("Card selected", func() {
 			card, err := Client.Card.Get(cmd.Context(), args[0])
 			if err != nil {
-				fmt.Println("Could not get card info")
-				fmt.Println(err.Error())
-				os.Exit(1)
+				helpers.HandleError("Error getting the card", err, 1)
 			}
 
 			helpers.PrintCards([]terminal.Card{card.Data})
@@ -218,9 +193,7 @@ var clearCartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Cart.Clear(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not clear shopping cart")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error clearing the cart", err, 1)
 		}
 
 		fmt.Println("Shopping cart cleared")
@@ -233,15 +206,13 @@ var placeOrderCmd = &cobra.Command{
 	Aliases: []string{"o"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		res, err := Client.Cart.Convert(cmd.Context())
+		order, err := Client.Cart.Convert(cmd.Context())
 		if err != nil {
-			fmt.Println("Could place order")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error placing order", err, 1)
 		}
 
 		helpers.Section("Order placed", func() {
-			helpers.PrintOrders([]terminal.Order{res.Data})
+			helpers.PrintOrders([]terminal.Order{order.Data})
 		})
 	},
 }

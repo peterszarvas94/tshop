@@ -18,15 +18,13 @@ var productCmd = &cobra.Command{
 
 var listProductsCmd = &cobra.Command{
 	Use:     "list",
-	Short:   "List all products with variant and price",
+	Short:   "List all products",
 	Aliases: []string{"l"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the products")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the products", err, 1)
 		}
 
 		helpers.PrintProducts(products.Data)
@@ -41,9 +39,7 @@ var describeProductCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the products")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the product", err, 1)
 		}
 
 		var found *terminal.Product
@@ -54,7 +50,7 @@ var describeProductCmd = &cobra.Command{
 		}
 
 		if found == nil {
-			fmt.Printf("There is no product with the ID \"%s\"\n", args[0])
+			fmt.Printf("Could not find product")
 			os.Exit(1)
 		}
 

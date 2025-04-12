@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/peterszarvas94/tshop/helpers"
 	"github.com/spf13/cobra"
@@ -24,9 +23,7 @@ var listAddressesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		addresses, err := Client.Address.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting the addresses")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the addresses", err, 1)
 		}
 
 		helpers.PrintAddresses(addresses.Data)
@@ -51,9 +48,7 @@ var createAddressCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			fmt.Println("Error creating the address")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error creating address", err, 1)
 		}
 
 		helpers.Section("Address created", func() {
@@ -71,9 +66,7 @@ var deleteAddressCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := Client.Address.Delete(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Can not delete address")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error deleting the address", err, 1)
 		}
 
 		fmt.Println("Address deleted")

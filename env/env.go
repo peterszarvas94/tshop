@@ -22,7 +22,7 @@ func init() {
 	}
 
 	if Config.TERMINAL_ENV != "dev" && Config.TERMINAL_ENV != "prod" {
-		fmt.Printf("Environment variable should be either \"dev\" or \"prod\"")
+		fmt.Println("Environment variable should be either \"dev\" or \"prod\"")
 		os.Exit(1)
 	}
 }

@@ -24,9 +24,7 @@ var listTokensCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		tokens, err := Client.Token.List(cmd.Context())
 		if err != nil {
-			fmt.Println("Error getting tokens")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the tokens", err, 1)
 		}
 
 		helpers.PrintTokens(tokens.Data)
@@ -41,17 +39,13 @@ var createTokenCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		token, err := Client.Token.New(cmd.Context())
 		if err != nil {
-			fmt.Println("Error creating token")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error creating the token", err, 1)
 		}
 
 		// "created" is missing from response, so we make a new request
 		newToken, err := Client.Token.Get(cmd.Context(), token.Data.ID)
 		if err != nil {
-			fmt.Println("Error getting the token")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error getting the token", err, 1)
 		}
 
 		helpers.Section("Token value will not be shown again", func() {
@@ -77,14 +71,14 @@ var deleteTokenCmd = &cobra.Command{
 			}
 		}
 
+		fmt.Println("Confirmed")
+
 		_, err := Client.Token.Delete(cmd.Context(), args[0])
 		if err != nil {
-			fmt.Println("Error revoke token")
-			fmt.Println(err.Error())
-			os.Exit(1)
+			helpers.HandleError("Error deleting the token", err, 1)
 		}
 
-		fmt.Println("Token revoked successfully")
+		fmt.Println("Token deleted successfully")
 	},
 }
 
