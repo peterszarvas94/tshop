@@ -68,27 +68,78 @@ var cartInfoCmd = &cobra.Command{
 	},
 }
 
-var updateItemInCartCmd = &cobra.Command{
-	Use:     "update",
-	Short:   "Add / Update item in shopping cart",
-	Long:    "Add / Update item in shopping cart.\nIf the item does not exists in the cart yet, this command will add it.\nIf the item is already in the cart, it will overwrite the quantity.\nIf you set it to zero, it will delete the item from the cart.",
-	Aliases: []string{"u"},
+var addToCartCmd = &cobra.Command{
+	Use:     "add",
+	Short:   "Add items to the cart",
+	Aliases: []string{"k"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		cart, err := Client.Cart.SetItem(cmd.Context(), terminal.CartSetItemParams{
-			ProductVariantID: terminal.F(Item.ProductVariantID),
-			Quantity:         terminal.F(Item.Quantity),
-		})
+		oldCart, err := Client.Cart.Get(cmd.Context())
 		if err != nil {
-			fmt.Println("Could not add item to the cart")
+			fmt.Println("Could not get cart info")
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 
-		if Item.Quantity == 0 {
-			fmt.Println("Item removed from cart")
-			os.Exit(0)
+		var count int64 = 0
+		for _, item := range oldCart.Data.Items {
+			if item.ProductVariantID == Item.ProductVariantID {
+				count += item.Quantity
+			}
 		}
+
+		quantity := Item.Quantity
+		if quantity == 0 {
+			quantity = 1
+		}
+
+		cart, err := Client.Cart.SetItem(cmd.Context(), terminal.CartSetItemParams{
+			ProductVariantID: terminal.F(Item.ProductVariantID),
+			Quantity:         terminal.F(quantity + count),
+		})
+
+		helpers.Section("Item in cart updated", func() {
+			products, err := Client.Product.List(cmd.Context())
+			if err != nil {
+				fmt.Println("Could not get products")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+
+			helpers.PrintCartItems(cart.Data.Items, products.Data)
+		})
+	},
+}
+
+var removeFromCartCmd = &cobra.Command{
+	Use:     "remove",
+	Short:   "Remove items from cart",
+	Aliases: []string{"j"},
+	Args:    cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		oldCart, err := Client.Cart.Get(cmd.Context())
+		if err != nil {
+			fmt.Println("Could not get cart info")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
+		var count int64 = 0
+		for _, item := range oldCart.Data.Items {
+			if item.ProductVariantID == Item.ProductVariantID {
+				count += item.Quantity
+			}
+		}
+
+		quantity := Item.Quantity
+		if quantity == 0 {
+			quantity = 1
+		}
+
+		cart, err := Client.Cart.SetItem(cmd.Context(), terminal.CartSetItemParams{
+			ProductVariantID: terminal.F(Item.ProductVariantID),
+			Quantity:         terminal.F(count - quantity),
+		})
 
 		helpers.Section("Item in cart updated", func() {
 			products, err := Client.Product.List(cmd.Context())
@@ -197,14 +248,19 @@ var placeOrderCmd = &cobra.Command{
 
 func init() {
 	cartCmd.AddCommand(cartInfoCmd)
-	updateItemInCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
-	updateItemInCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
-	updateItemInCartCmd.MarkFlagRequired("variant")
-	updateItemInCartCmd.MarkFlagRequired("quantity")
-	cartCmd.AddCommand(updateItemInCartCmd)
+
+	addToCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
+	addToCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
+	addToCartCmd.MarkFlagRequired("variant")
+	cartCmd.AddCommand(addToCartCmd)
+
+	removeFromCartCmd.Flags().StringVarP(&Item.ProductVariantID, "variant", "v", "", "Variant ID")
+	removeFromCartCmd.Flags().Int64VarP(&Item.Quantity, "quantity", "q", 0, "Quantity")
+	removeFromCartCmd.MarkFlagRequired("variant")
+	cartCmd.AddCommand(removeFromCartCmd)
+
 	cartCmd.AddCommand(selectAddressForCartCmd)
 	cartCmd.AddCommand(selectCardForCartCmd)
 	cartCmd.AddCommand(clearCartCmd)
 	cartCmd.AddCommand(placeOrderCmd)
-	rootCmd.AddCommand(cartCmd)
 }

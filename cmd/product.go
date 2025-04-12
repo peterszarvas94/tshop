@@ -34,9 +34,9 @@ var listProductsCmd = &cobra.Command{
 }
 
 var describeProductCmd = &cobra.Command{
-	Use:     "info [name / id]",
-	Short:   "Get description of a product by name or id",
-	Aliases: []string{"describe, i"},
+	Use:     "info [id]",
+	Short:   "Get description of a product",
+	Aliases: []string{"describe", "i"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		products, err := Client.Product.List(cmd.Context())
@@ -48,21 +48,21 @@ var describeProductCmd = &cobra.Command{
 
 		var found *terminal.Product
 		for _, product := range products.Data {
-			if product.Name == args[0] {
-				found = &product
-				break
-			}
 			if product.ID == args[0] {
 				found = &product
 			}
 		}
 
 		if found == nil {
-			fmt.Printf("There is no product with the name or ID \"%s\"\n", args[0])
+			fmt.Printf("There is no product with the ID \"%s\"\n", args[0])
 			os.Exit(1)
 		}
 
-		helpers.Section(found.Description, func() {
+		helpers.Section("Description:", func() {
+			fmt.Println(found.Description)
+		})
+
+		helpers.Section("Details:", func() {
 			helpers.PrintProducts(products.Data)
 		})
 	},

@@ -10,6 +10,8 @@ github.com/terminaldotshop/terminal-sdk-go v1.7.0 h1:w4KwSQ3f6tzRZr3ks28tNXuw34b
 github.com/terminaldotshop/terminal-sdk-go v1.7.0/go.mod h1:28WE2YTqRVLNDpZFiPm4ny3f1hjJuJkf0e2Jwy5Gxys=
 github.com/terminaldotshop/terminal-sdk-go v1.7.2 h1:MBF1Y4bMY5OzKplV++J1Ai/TEazIDeM9/GuhiVEBEog=
 github.com/terminaldotshop/terminal-sdk-go v1.7.2/go.mod h1:28WE2YTqRVLNDpZFiPm4ny3f1hjJuJkf0e2Jwy5Gxys=
+github.com/terminaldotshop/terminal-sdk-go v1.8.0 h1:CHsCN7rvmFaOeEnczxwLol1kdivY0NTHNdKFqrKR2lI=
+github.com/terminaldotshop/terminal-sdk-go v1.8.0/go.mod h1:28WE2YTqRVLNDpZFiPm4ny3f1hjJuJkf0e2Jwy5Gxys=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.18.0 h1:FIDeeyB800efLX89e5a8Y0BNH+LOngJyGrIWxG2FKQY=
 github.com/tidwall/gjson v1.18.0/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

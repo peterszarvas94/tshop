@@ -41,19 +41,34 @@ var listSubsCmd = &cobra.Command{
 
 var createSubCmd = &cobra.Command{
 	Use:     "create",
-	Short:   "Create subscription",
+	Short:   "Create subscription.",
+	Example: "--type weekly --interval 3\n--type fixed",
 	Aliases: []string{"c"},
 	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		if SubType != string(terminal.SubscriptionScheduleTypeFixed) && SubType != string(terminal.SubscriptionScheduleTypeWeekly) {
+			fmt.Printf("Schedule type can only be \"%s\" or \"%s\"\n", terminal.SubscriptionScheduleTypeFixed, terminal.SubscriptionScheduleTypeWeekly)
+			os.Exit(1)
+		}
+
+		if SubType == string(terminal.SubscriptionScheduleTypeWeekly) && Sub.Schedule.Interval < 1 {
+			fmt.Printf("If scheduel type is \"%s\", interval must be set to a value greater than 0\n", terminal.SubscriptionScheduleTypeWeekly)
+			os.Exit(1)
+		}
+
 		res, err := Client.Subscription.New(cmd.Context(), terminal.SubscriptionNewParams{
 			Subscription: terminal.SubscriptionParam{
 				AddressID:        terminal.F(Sub.AddressID),
 				CardID:           terminal.F(Sub.CardID),
 				ProductVariantID: terminal.F(Sub.ProductVariantID),
 				Quantity:         terminal.Int(Sub.Quantity),
-				// TODO: schedule, next?
+				Schedule: terminal.Raw[terminal.SubscriptionScheduleUnionParam](terminal.SubscriptionScheduleParam{
+					Type:     terminal.F(terminal.SubscriptionScheduleType(SubType)),
+					Interval: terminal.Int(Sub.Schedule.Interval),
+				}),
 			},
 		})
+
 		if err != nil {
 			fmt.Println("Error creating the subscriptions")
 			fmt.Println(err.Error())
@@ -69,6 +84,30 @@ var createSubCmd = &cobra.Command{
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
+
+			subs, err := Client.Subscription.List(cmd.Context())
+			if err != nil {
+				fmt.Println("Subscription is created, but could not get subscription info")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+
+			var found *terminal.Subscription
+			for _, sub := range subs.Data {
+				if sub.ProductVariantID == Sub.ProductVariantID {
+					found = &sub
+				}
+			}
+
+			if found == nil {
+				fmt.Println("Subscription is created, but could not get subscription info")
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+
+			Sub.Schedule.Type = terminal.SubscriptionScheduleType(SubType)
+			Sub.ID = found.ID
+			Sub.Next = found.Next
 			helpers.PrintSubs(products.Data, []terminal.Subscription{*Sub})
 		})
 	},
@@ -145,10 +184,14 @@ func init() {
 	createSubCmd.Flags().StringVarP(&Sub.CardID, "card", "c", "", "Card")
 	createSubCmd.Flags().StringVarP(&Sub.ProductVariantID, "variant", "v", "", "Variant")
 	createSubCmd.Flags().Int64VarP(&Sub.Quantity, "quantity", "q", 0, "Quantity")
+	createSubCmd.Flags().StringVarP(&SubType, "type", "t", "", fmt.Sprintf("Type (%s or %s)", terminal.SubscriptionScheduleTypeFixed, terminal.SubscriptionScheduleTypeWeekly))
+	createSubCmd.Flags().Int64VarP(&Sub.Schedule.Interval, "interval", "i", 0, "Interval")
+
 	createSubCmd.MarkFlagRequired("address")
 	createSubCmd.MarkFlagRequired("card")
 	createSubCmd.MarkFlagRequired("variant")
 	createSubCmd.MarkFlagRequired("quantity")
+	createSubCmd.MarkFlagRequired("type")
 	subscriptionCmd.AddCommand(createSubCmd)
 	subscriptionCmd.AddCommand(subInfoCmd)
 	subscriptionCmd.AddCommand(cancelSubCmd)

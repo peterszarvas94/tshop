@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/spf13/cobra v1.9.1
-	github.com/terminaldotshop/terminal-sdk-go v1.7.2
+	github.com/terminaldotshop/terminal-sdk-go v1.8.0
 )
 
 require (

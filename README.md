@@ -40,80 +40,73 @@ tshop address create --help
 ### Address
 
 ```bash
-tshop address
-tshop address create
-tshop address delete
+tshop address create --name "John Doe" --country "US" --province "Montana" --city "Bozeman" --zip "59715" --street1 "123 Main Street" --street2 "Apt 4B" --phone "406-555-1234"
+tshop address delete "shp_xxx"
 tshop address list
 ```
 
 ### Card
 
 ```bash
-tshop card
 tshop card create
-tshop card delete
+tshop card delete "crd_xxx"
 tshop card list
 ```
 
 ### Shopping cart
 
 ```bash
-tshop cart
-tshop cart address
-tshop cart card
+tshop cart address "shp_xxx"
+tshop cart card "crd_xxx"
 tshop cart clear
 tshop cart info
-tshop cart update
+tshop cart add --variant "var_xxx" --quantity "1"
+tshop cart remove --variant "var_xxx" --quantity "1"
 tshop cart order
 ```
 
 ### Order
 
 ```bash
-tshop order
-tshop order info
+tshop order info "ord_xxx"
 tshop order list
 ```
 
 ### Product
 
 ```bash
-tshop product
-tshop product info
+tshop product info "prd_xxx"
 tshop product list
 ```
 
 ### Subscriptions
 
 > [!CAUTION]
-> Not tested in production. It possibly needs future improvement..
+> Not tested in production.
 
 ```bash
-tshop subscription
 tshop subscription cancel
-tshop subscription create
-tshop subscription info
+tshop subscription create --address "shp_xxx" --card "crd_xxx" --variant "var_xxx" --quantity "1" --type "weekly" --interval "3"
+tshop subscription info "sub_xxx"
 tshop subscription list
 ```
 
 ### Token
 
-> [!TIP]
+> [!WARNING]
 > If you delete the token you are using, you need to confirm it.
 
 ```bash
-tshop token
 tshop token create
-tshop token delete
+tshop token delete "pat_xxx"
 tshop token list
 ```
 
 ### User
 
 ```bash
-tshop user
 tshop user info
-tshop user update
+tshop user update --name "John Doe" --email "johndoe@terminal.shop"
 ```
 
 ### Version

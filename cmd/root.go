@@ -33,6 +33,7 @@ var (
 	Address = &terminal.Address{}
 	Item    = &terminal.CartItem{}
 	Sub     = &terminal.Subscription{}
+	SubType = "" // can't cast Sub.Schedule.Type into string in flags
 )
 
 func init() {

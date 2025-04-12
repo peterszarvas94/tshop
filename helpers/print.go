@@ -84,10 +84,10 @@ func PrintCartItems(items []terminal.CartItem, products []terminal.Product) {
 func PrintAddresses(addresses []terminal.Address) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
 
-	fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2")
-	fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------")
+	fmt.Fprintln(w, "ID\tName\tCountry\tProvince\tCity\tZip\tStreet1\tStreet2\tPhone")
+	fmt.Fprintln(w, "--\t----\t-------\t--------\t----\t---\t-------\t-------\t-----")
 	for _, address := range addresses {
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", address.ID, address.Name, address.Country, address.Province, address.City, address.Zip, address.Street1, address.Street2, address.Phone)
 	}
 	w.Flush()
 }
