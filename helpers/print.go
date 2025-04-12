@@ -95,11 +95,11 @@ func PrintAddresses(addresses []terminal.Address) {
 func PrintOrders(orders []terminal.Order) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 8, 2, ' ', tabwriter.TabIndent)
 
-	fmt.Fprintf(w, "ID\tNumber\tItems\tTracking\tURL\t%*s\n", 10, "Amount")
-	fmt.Fprintf(w, "--\t------\t-----\t--------\t---\t%*s\n", 10, "------")
+	fmt.Fprintf(w, "ID\tItems\tTracking\tURL\t%*s\n", 10, "Amount")
+	fmt.Fprintf(w, "--\t-----\t--------\t---\t%*s\n", 10, "------")
 	for _, order := range orders {
-		subtotal := FormatPrice(order.Amount.Subtotal)
-		fmt.Fprintf(w, "%s\t%d\t%d\t%s\t%s\t%s\n", order.ID, order.Index, len(order.Items), subtotal, order.Tracking.Number, order.Tracking.URL)
+		subtotal := PadPrice(order.Amount.Subtotal)
+		fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\n", order.ID, len(order.Items), order.Tracking.Number, order.Tracking.URL, subtotal)
 	}
 	w.Flush()
 }

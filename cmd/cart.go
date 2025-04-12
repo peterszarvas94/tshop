@@ -234,4 +234,5 @@ func init() {
 	cartCmd.AddCommand(selectCardForCartCmd)
 	cartCmd.AddCommand(clearCartCmd)
 	cartCmd.AddCommand(placeOrderCmd)
+	rootCmd.AddCommand(cartCmd)
 }
