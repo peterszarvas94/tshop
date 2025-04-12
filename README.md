@@ -4,9 +4,9 @@ CLI for terminal.shop
 
 ## Inspiration
 
-The `ssh terminal.shop` experience is too bloated.
+The `ssh terminal.shop` experience is fine, but bloated.
 
-I present you the _real_ terminal shopping experience. Only pure text, no fancy frontend.
+I present you the _real_ terminal shopping experience.
 
 ## Install
 
@@ -18,14 +18,14 @@ go install github.com/peterszarvas94/tshop@v0.0.1
 
 You should set up the following env variables:
 
-> [!NOTE]
-> If you don't have valid tokens, visit `ssh terminal.shop -t token` (or `ssh dev.terminal.shop -t token` for dev server)
-
 ```sh
 TERMINAL_TOKEN_ID=pat_...
 TERMINAL_TOKEN=trm_...
 TERMINAL_ENV=dev/prod
 ```
+
+> [!NOTE]
+> If you don't have valid tokens, visit `ssh terminal.shop -t token` for prod, or `ssh dev.terminal.shop -t token` for dev
 
 ## Commands
 
@@ -81,9 +81,6 @@ tshop product list
 
 ### Subscriptions
 
-> [!CAUTION]
-> Not tested in production.
-
 ```bash
 tshop subscription cancel
 tshop subscription create --address "shp_xxx" --card "crd_xxx" --variant "var_xxx" --quantity "1" --type "weekly" --interval "3"
@@ -91,16 +88,19 @@ tshop subscription info "sub_xxx"
 tshop subscription list
 ```
 
-### Token
+> [!CAUTION]
+> Not tested in production.
 
-> [!WARNING]
-> If you delete the token you are using, you need to confirm it.
+### Token
 
 ```bash
 tshop token create
 tshop token delete "pat_xxx"
 tshop token list
 ```
+
+> [!WARNING]
+> If you delete the token you are using, you need to confirm it.
 
 ### User
 
