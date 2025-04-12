@@ -118,7 +118,7 @@ func PrintOrderItems(items []terminal.OrderItem, products []terminal.Product) {
 	fmt.Fprintf(w, "----------\t----\t--------\t%*s\n", 10, "------")
 	for _, item := range items {
 		name := variantNameMap[item.ProductVariantID]
-		amount := FormatPrice(item.Amount)
+		amount := PadPrice(item.Amount)
 		fmt.Fprintf(w, "%s\t%s\t%d\t%s\n", item.ProductVariantID, name, item.Quantity, amount)
 	}
 	w.Flush()
