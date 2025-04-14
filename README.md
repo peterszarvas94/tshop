@@ -5,7 +5,7 @@ The essence of the [terminal](https://www.terminal.shop) shopping experience - a
 ## Install
 
 ```bash
-go install github.com/peterszarvas94/tshop@v1.0.0
+go install github.com/peterszarvas94/tshop@v1.0.5
 ```
 
 ## Env
